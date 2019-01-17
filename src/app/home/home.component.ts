@@ -2,6 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import {Subscription} from 'rxjs/Subscription';
+import {interval} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -9,12 +11,23 @@ import {Subscription} from 'rxjs/Subscription';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  customObsSubscription: Subscription
+  customObsSubscription: Subscription;
+  numbersObsSubscription: Subscription;
 
   constructor() {
   }
 
   ngOnInit() {
+    const myNumbers = interval(1000).pipe(map(
+      (data: number) => {
+        return data * 2;
+      }
+    ));
+    this.numbersObsSubscription = myNumbers.subscribe(
+      (number: number) => {
+        console.log(number);
+      }
+    );
     const myObservable = Observable.create((observer: Observer<string>) => {
       setTimeout(() => {
         observer.next('first package');
@@ -45,5 +58,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.customObsSubscription.unsubscribe();
+    this.numbersObsSubscription.unsubscribe();
   }
 }
