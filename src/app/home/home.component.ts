@@ -20,8 +20,12 @@ export class HomeComponent implements OnInit {
         observer.next('second package');
       }, 4000);
       setTimeout(() => {
-        observer.error('this does not work');
+        /*observer.error('this does not work');*/
+        observer.complete();
       }, 5000);
+      setTimeout(() => {
+        observer.next('third package');
+      }, 6000);
     });
     myObservable.subscribe(
       (data: string) => {
