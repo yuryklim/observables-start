@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  customObsSubscription: Subscription
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
     const myObservable = Observable.create((observer: Observer<string>) => {
@@ -27,7 +30,7 @@ export class HomeComponent implements OnInit {
         observer.next('third package');
       }, 6000);
     });
-    myObservable.subscribe(
+    this.customObsSubscription = myObservable.subscribe(
       (data: string) => {
         console.log(data);
       },
@@ -38,5 +41,9 @@ export class HomeComponent implements OnInit {
         console.log('completed');
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.customObsSubscription.unsubscribe();
   }
 }
